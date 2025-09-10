@@ -12,10 +12,10 @@ The assignment provided the base code for both services. (Microservices architec
 - [Overview](#overview)
 - [Services](#services)
 - [Environment Setup](#environment-setup)
-- [Run Locally](#run-locally)
+- [Run Locally - Refer screenshots](#run-locally)
 - [API Endpoints](#api-endpoints)
-- [Test Walkthrough (cURL)](#test-walkthrough-curl)
-- [Screenshots](#screenshots)
+- [Test Walkthrough (cURL) - Refer screenshots](#test-walkthrough-curl)
+- [Screenshots - Logs](#screenshots)
 - [Findings & Learnings](#findings--learnings)
 
 ---
