@@ -1,6 +1,6 @@
-# Microservices Architecture – User & Order Services (Flask)
+# Microservices Architecture – User & Order Services
 
-This project demonstrates a tiny **microservices** setup with two independent Flask apps:
+This project demonstrates a **microservices** setup with two independent Flask apps:
 - **User Service** (users Create/Read) on port **5001**
 - **Order Service** (orders) on port **5002**, which **calls the User Service** to enrich order responses with user details.
 
@@ -23,8 +23,11 @@ The assignment provided the base code for both services. (Microservices architec
 ## Overview
 
 - **User Service** exposes REST endpoints to create and fetch users. Data is kept in an **in-memory dictionary**. 
-- **Order Service** exposes endpoints to create and fetch orders. Each order stores only a `user_id` and `product`. When you GET an order, the service **calls the User Service** to fetch the corresponding user and attaches it to the response.  
-This matches the assignment’s reference implementations. 
+- **Order Service** exposes endpoints to create and fetch orders. Each order stores a `user_id` and `product`. When you GET an order, the service **calls the User Service** to fetch the corresponding user and attaches it to the response.  
+This matches the assignment’s reference implementations.
+
+Both services are built with **Flask** (to handle HTTP requests) and the **Requests** library (used by the Order Service to call the User Service).  
+A Python **virtual environment (venv)** is used to manage dependencies.
 
 ---
 
@@ -109,12 +112,12 @@ curl http://localhost:5001/users/1
 ```
 **Expected**
 ```json
-{"name":"Alice","email":"alice@example.com"}
+{"email":"alice@example.com","name":"Alice"}
 ```
 
-2) **Create a User (Corrected command)** ✅
+2) **Create a new User** 
 ```bash
-curl -X POST http://localhost:5001/users   -H "Content-Type: application/json"   -d '{"name":"Dhruv","email":"dhruv@example.com"}'
+curl -X POST http://localhost:5001/users -H "Content-Type: application/json" -d '{"name":"Dhruv","email":"dhruv@example.com"}'
 ```
 **Expected**
 ```json
@@ -127,7 +130,7 @@ curl http://localhost:5001/users/3
 ```
 **Expected**
 ```json
-{"name":"Dhruv","email":"dhruv@example.com"}
+{"email":"dhruv@example.com","name":"Dhruv"}
 ```
 
 4) **Get an existing Order (1)** — will include Alice’s details
@@ -136,7 +139,7 @@ curl http://localhost:5002/orders/1
 ```
 **Expected**
 ```json
-{"user_id":1,"product":"Laptop","user":{"name":"Alice","email":"alice@example.com"}}
+{"product":"Laptop","user":{"email":"alice@example.com","name":"Alice"},"user_id":1}
 ```
 
 5) **Create a new Order for user 1**
@@ -154,20 +157,29 @@ curl http://localhost:5002/orders/3
 ```
 **Expected**
 ```json
-{"user_id":1,"product":"Tablet","user":{"name":"Alice","email":"alice@example.com"}}
+{"product":"Tablet","user":{"email":"alice@example.com","name":"Alice"},"user_id":1}
 ```
 
-7) **Get Order 1 again**
+7) **Create a new Order for user 3**
 ```bash
-curl http://localhost:5002/orders/1
+curl -X POST -H "Content-Type: application/json" -d '{"user_id": 3, "product": "Galaxy Tablet"}' http://localhost:5002/orders
 ```
 **Expected**
 ```json
-{"user_id":1,"product":"Laptop","user":{"name":"Alice","email":"alice@example.com"}}
+{"order_id":4}
+```
+
+8) **Get the newly created Order (4)** — includes Dhruv’s details
+```bash
+curl http://localhost:5002/orders/4
+```
+**Expected**
+```json
+{"product":"Galaxy Tablet","user":{"email":"dhruv@example.com","name":"Dhruv"},"user_id":3}
 ```
 
 ![Request and Response examples](./images/requestResponse.png)  
-*Example curl requests and their actual responses*  
+*Curl requests and their actual responses*  
 
 ---
 
